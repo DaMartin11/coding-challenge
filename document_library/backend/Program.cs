@@ -8,12 +8,25 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAntiforgery();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
+app.UseCors("AllowFrontend");
 app.UseAntiforgery();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 
 // --- Upload single document ---
 app.MapPost("/api/documents/upload", async (IFormFile file) =>
@@ -123,10 +136,14 @@ app.MapPost("/api/share/{documentId}/create", (Guid documentId, [FromQuery] int 
     var newLink = new ShareLink
     {
         DocumentId = documentId,
+        Token = Guid.NewGuid(), 
         ExpiresAt = DateTime.UtcNow.AddHours(expiresInHours)
     };
 
     ShareLinkStore.Links.Add(newLink);
+
+    
+    Console.WriteLine($"Generated ShareLink: Token={newLink.Token} ExpiresAt={newLink.ExpiresAt}");
 
     return Results.Ok(new
     {
@@ -134,6 +151,7 @@ app.MapPost("/api/share/{documentId}/create", (Guid documentId, [FromQuery] int 
         ExpiresAt = newLink.ExpiresAt
     });
 });
+
 // --- Access shared document by token ---
 app.MapGet("/api/share/{token}", (Guid token) =>
 {
@@ -167,6 +185,19 @@ app.MapGet("/api/share/{token}", (Guid token) =>
         contentType: doc.Type,
         fileDownloadName: doc.Name
     );
+});
+app.MapGet("/api/share/{token}/validate", (Guid token) =>
+{
+    var link = ShareLinkStore.Links.FirstOrDefault(l => l.Token == token);
+    if (link == null)
+    {
+        return Results.NotFound(new { title = "Share link not found." });
+    }
+    if (link.IsExpired)
+    {
+        return Results.Problem("This share link has expired.", statusCode: 403);
+    }
+    return Results.Ok(new { documentId = link.DocumentId });
 });
 
 app.Run();
