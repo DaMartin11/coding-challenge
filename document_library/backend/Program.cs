@@ -39,6 +39,16 @@ app.MapPost("/api/documents/upload", async (IFormFile file) =>
     using var stream = new FileStream(filePath, FileMode.Create);
     await file.CopyToAsync(stream);
 
+    string previewUrl;
+    if (file.ContentType.StartsWith("image/"))
+    {
+        previewUrl = $"/uploads/{file.FileName}";
+    }
+    else
+    {
+        previewUrl = GetIconForType(file.ContentType);
+    }
+
     var doc = new Document
     {
         Name = file.FileName,
@@ -46,7 +56,7 @@ app.MapPost("/api/documents/upload", async (IFormFile file) =>
         FilePath = filePath,
         UploadDate = DateTime.UtcNow,
         DownloadCount = 0,
-        PreviewUrl = "/previews/default.jpg",
+        PreviewUrl = previewUrl,
         IconUrl = GetIconForType(file.ContentType)
     };
 
@@ -56,9 +66,13 @@ app.MapPost("/api/documents/upload", async (IFormFile file) =>
 })
 .DisableAntiforgery();
 
+
 // --- Upload several documents ---
-app.MapPost("/api/documents/upload-multiple", async ([FromForm] List<IFormFile> files) =>
+app.MapPost("/api/documents/upload-multiple", async (HttpRequest request) =>
 {
+
+    var requestData = await request.ReadFormAsync();
+    var files = requestData.Files;
     if (files == null || files.Count == 0)
     {
         return Results.BadRequest("No files uploaded.");
@@ -136,13 +150,13 @@ app.MapPost("/api/share/{documentId}/create", (Guid documentId, [FromQuery] int 
     var newLink = new ShareLink
     {
         DocumentId = documentId,
-        Token = Guid.NewGuid(), 
+        Token = Guid.NewGuid(),
         ExpiresAt = DateTime.UtcNow.AddHours(expiresInHours)
     };
 
     ShareLinkStore.Links.Add(newLink);
 
-    
+
     Console.WriteLine($"Generated ShareLink: Token={newLink.Token} ExpiresAt={newLink.ExpiresAt}");
 
     return Results.Ok(new

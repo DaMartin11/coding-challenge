@@ -29,5 +29,24 @@ namespace DocumentLibraryApi.Storage
             // Return relative path
             return $"/{folder}/{file.FileName}";
         }
+
+        public List<string> GetFiles(string folder)
+        {
+            var folderPath = Path.Combine(_rootPath, folder);
+
+            if (!Directory.Exists(folderPath))
+            {
+                return new List<string>(); // Or throw exception depending on your needs
+            }
+
+            var files = Directory.GetFiles(folderPath);
+
+            // Return relative paths
+            return files.Select(filePath =>
+            {
+                var fileName = Path.GetFileName(filePath);
+                return $"/{folder}/{fileName}";
+            }).ToList();
+        }
     }
 }
