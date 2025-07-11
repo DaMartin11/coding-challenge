@@ -64,13 +64,13 @@
 
 ------------------------------
 
-\- Upload \*\*single\*\* or \*\*multiple\*\* documents.
+\- Upload single or multiple documents.
 
-\- Check that they appear in the \*\*document list\*\*.
+\- Check that they appear in the document list.
 
 \- Click \*\*Download\*\* to test file download.
 
-\- Use \*\*Generate Share Link\*\* and open it in a new tab to verify sharing.
+\- Use Generate Share Link and open it in a new tab to verify sharing.
 
 
 
@@ -88,23 +88,23 @@ FRONTEND
 
 ------------------------------
 
-\- \*\*Framework:\*\* React with Vite
+\- Framework: React with Vite
 
-\- \*\*Routing:\*\* React Router for page navigation (`/` for upload/list, `/share/:token` for shared access)
+\- Routing: React Router for page navigation (`/` for upload/list, `/share/:token` for shared access)
 
-\- \*\*Component-based:\*\* 
+\- Component-based: 
 
-&nbsp; - DocumentUpload: handles file selection and upload
+- DocumentUpload: handles file selection and upload
 
-&nbsp; - DocumentList: fetches and displays all uploaded documents
+ - DocumentList: fetches and displays all uploaded documents
 
-&nbsp; - ShareLinkAccess: validates and downloads shared links
+ - ShareLinkAccess: validates and downloads shared links
 
-\- \*\*Styling:\*\* Centralized CSS in App.css for consistent design
+\- Styling: Centralized CSS in App.css for consistent design
 
 
 
-\*Design Decision:\* Keep components small and focused for easier maintenance and reuse.
+Design Decision: Keep components small and focused for easier maintenance and reuse.
 
 
 
@@ -114,101 +114,102 @@ FRONTEND
 
 ------------------------------
 
-\- \*\*Framework:\*\* ASP.NET Core Minimal APIs
+\- Framework: ASP.NET Core Minimal APIs
 
-\- \*\*Endpoints:\*\*
+\- Endpoints:
 
-&nbsp; - /api/documents/upload – Single file upload
+ - /api/documents/upload – Single file upload
 
-&nbsp; - /api/documents/upload-multiple – Multiple file upload
+ - /api/documents/upload-multiple – Multiple file upload
 
-&nbsp; - /api/documents – List all documents
+ - /api/documents – List all documents
 
-&nbsp; - /api/documents/{id}/download – Download by ID
+ - /api/documents/{id}/download – Download by ID
 
-&nbsp; - /api/share/{documentId}/create – Create share link
+ - /api/share/{documentId}/create – Create share link
 
-&nbsp; - /api/share/{token}/validate – Validate share link
+ - /api/share/{token}/validate – Validate share link
 
-&nbsp; - /api/share/{token} – Download using share link
+ - /api/share/{token} – Download using share link
 
-&nbsp; - \*\*In-Memory Storage:\*\*
+ - In-Memory Storage:
 
-&nbsp; - DocumentStore and ShareLinkStore hold documents and share links temporarily
-
-&nbsp; -  Data is lost on server restart (no database persistence)
+ - DocumentStore and ShareLinkStore hold documents and share links temporarily
 
 
-
-\*Design Decision:\* Use in-memory stores for simplicity during development and testing.
+-  Data is lost on server restart (no database persistence)
 
 
 
-
-
-&nbsp;INTEGRATION
-
-------------------------------
-
-\- Frontend fetches documents and share link data from the backend using REST APIs.
-
-\- CORS is configured to allow frontend (localhost:5173) to call the backend (localhost:5113).
-
-
-
-\*Design Decision:\* Split frontend and backend for clean separation of concerns.
+Design Decision: Use in-memory stores for simplicity during development and testing.
 
 
 
 
+
+INTEGRATION
 
 ------------------------------
 
-&nbsp;Ideas and Proposals to Improve the Application
+ Frontend fetches documents and share link data from the backend using REST APIs.
+
+ CORS is configured to allow frontend (localhost:5173) to call the backend (localhost:5113).
+
+
+
+Design Decision: Split frontend and backend for clean separation of concerns.
+
+
+
+
+
+------------------------------
+
+Ideas and Proposals to Improve the Application
 
 ------------------------------
 
 
 
-&nbsp;FROM A USER PERSPECTIVE
+FROM A USER PERSPECTIVE
 
 ------------------------------
 
-\- Add \*\*authentication\*\* for secure access.
+- Add authentication for secure access.
 
-\- Support \*\*user accounts\*\* with personal document libraries.
+- Support user accounts with personal document libraries.
 
-\- Include \*\*document previews\*\* (e.g., PDF viewer).
+- Include document previews (e.g., PDF viewer).
 
-\- Allow \*\*folder structures\*\* or \*\*tags\*\* for better organization.
+- Allow folder structuresor tags for better organization.
 
-\- Add \*\*drag-and-drop\*\* upload support.
+- Add drag-and-drop upload support.
 
-\- Improve \*\*mobile responsiveness\*\* with better layouts.
-
-
+- Improve mobile responsiveness with better layouts.
 
 
 
-&nbsp;FROM A TECHNICAL PERSPECTIVE
+
+
+FROM A TECHNICAL PERSPECTIVE
 
 ------------------------------
 
-\- Replace \*\*in-memory\*\* storage with a \*\*real database\*\* (e.g., SQLite, PostgreSQL, MongoDB) for persistence.
+- Replace in-memory storage with a real database (e.g., SQLite, PostgreSQL, MongoDB) for persistence.
 
-\- Add \*\*file storage\*\* on cloud services (AWS S3, Azure Blob, etc.).
+- Add file storage on cloud services (AWS S3, Azure Blob, etc.).
 
-\- Implement \*\*JWT-based authentication\*\* for secure APIs.
+- Implement JWT-based authentication for secure APIs.
 
-\- Add \*\*unit tests\*\* and \*\*integration tests\*\* for both frontend and backend.
+- Add unit tests and integration tests\*\* for both frontend and backend.
 
-\- Use \*\*CI/CD pipelines\*\* to deploy automatically.
+- Use CI/CD pipelines to deploy automatically.
 
-\- Add \*\*logging\*\* and \*\*error tracking\*\* (e.g., Serilog for backend).
+- Add logging and error tracking (e.g., Serilog for backend).
 
-\- Enable \*\*HTTPS\*\* in development and production for security.
+- Enable HTTPS in development and production for security.
 
-\- Optimize \*\*frontend styling\*\* using libraries (Tailwind, Material UI).
+- Optimize frontend styling using libraries (Tailwind, Material UI).
 
 
 
